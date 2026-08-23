@@ -2,13 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { imageUpload } from "@/lib/imageUpload";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [role, setRole] = useState("user");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -18,31 +25,86 @@ export default function RegisterPage() {
     }
   };
 
-  const handleGoogleAuth = () => {
-    // Better Auth Integration Here
-    console.log("Google Sign Up Clicked");
+  const handleGoogleAuth = async () => {
+    // try {
+    //   await authClient.signIn.social({
+    //     provider: "google",
+    //     callbackURL: "/",
+    //   });
+    // } catch (err) {
+    //   console.error("Google Auth Error:", err);
+    // }
+    console.log('Google Sign In Clicked');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Selected role with: role ('user' or 'artist')
-    // 1. Host image to Imgbb
-    // 2. Send response url to better auth
+    setError("");
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
+
+    if (password !== confirmPassword) {
+      setError("Password and Confirm Password do not match!");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      let imageUrl = "";
+      if (imageFile) {
+        imageUrl = await imageUpload(imageFile);
+      }
+
+      const { data, error: authError } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+        image: imageUrl,
+        role: role,
+        plan: "free",
+      });
+
+      if (authError) {
+        setError(authError.message || "Something went wrong!");
+        setLoading(false);
+        return;
+      }
+
+      toast.success('Registered successfully!')
+      router.push("/");
+    } catch (err) {
+      console.error("Registration failed:", err);
+      setError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-        
+
         {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-slate-100">Create an Account</h2>
           <p className="text-xs text-slate-400 mt-1">Join our platform to explore digital art</p>
         </div>
 
+        {/* Error Message Display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded-xl text-red-400 text-xs text-center">
+            {error}
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          
+
           {/* Image Upload Input */}
           <div className="flex flex-col items-center justify-center space-y-2 mb-2">
             <label className="relative cursor-pointer flex flex-col items-center justify-center w-20 h-20 rounded-full border-2 border-dashed border-slate-700 hover:border-[#E641B2] bg-slate-950 transition-colors overflow-hidden">
@@ -58,6 +120,7 @@ export default function RegisterPage() {
               )}
               <input
                 type="file"
+                name="image"
                 accept="image/*"
                 onChange={handleImageChange}
                 className="hidden"
@@ -70,6 +133,7 @@ export default function RegisterPage() {
             <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
             <input
               type="text"
+              name="name"
               required
               placeholder="John Doe"
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#7A156E] transition-colors"
@@ -80,6 +144,7 @@ export default function RegisterPage() {
             <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
             <input
               type="email"
+              name="email"
               required
               placeholder="you@example.com"
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#7A156E] transition-colors"
@@ -92,6 +157,7 @@ export default function RegisterPage() {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
                 required
                 placeholder="••••••••"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#7A156E] transition-colors pr-10"
@@ -122,6 +188,7 @@ export default function RegisterPage() {
             <div className="relative">
               <input
                 type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
                 required
                 placeholder="••••••••"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#7A156E] transition-colors pr-10"
@@ -150,6 +217,7 @@ export default function RegisterPage() {
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1">Register As</label>
             <select
+              name="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-[#7A156E] transition-colors cursor-pointer"
@@ -162,9 +230,10 @@ export default function RegisterPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#7A156E] hover:bg-[#A31D93] text-white font-bold text-sm py-2.5 rounded-xl transition-all shadow-md shadow-[#7A156E]/30 border border-[#A31D93] active:scale-[0.98] mt-2"
+            disabled={loading}
+            className="w-full bg-[#7A156E] hover:bg-[#A31D93] text-white font-bold text-sm py-2.5 rounded-xl transition-all shadow-md shadow-[#7A156E]/30 border border-[#A31D93] active:scale-[0.98] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Account
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
