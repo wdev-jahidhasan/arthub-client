@@ -6,13 +6,14 @@ import Link from "next/link";
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState("user");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImageFile(file); // ImgBB te pathanor jonno file context e thakbe
+      setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -24,8 +25,9 @@ export default function RegisterPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 1. ImgBB te imageFile post korben
-    // 2. Response URL niye Better Auth registration complete korben
+    // Selected role with: role ('user' or 'artist')
+    // 1. Host image to Imgbb
+    // 2. Send response url to better auth
   };
 
   return (
@@ -144,6 +146,20 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          {/* User Role Dropdown */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 mb-1">Register As</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-[#7A156E] transition-colors cursor-pointer"
+            >
+              <option value="user" className="bg-slate-900 text-slate-100">User</option>
+              <option value="artist" className="bg-slate-900 text-slate-100">Artist</option>
+            </select>
+          </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-[#7A156E] hover:bg-[#A31D93] text-white font-bold text-sm py-2.5 rounded-xl transition-all shadow-md shadow-[#7A156E]/30 border border-[#A31D93] active:scale-[0.98] mt-2"

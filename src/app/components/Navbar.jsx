@@ -13,7 +13,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-slate-950 text-slate-100 border-b border-slate-800">
+    <nav className="bg-slate-950 text-slate-100 border-b border-slate-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         
         {/* MOBILE VIEW (Screen < sm) */}

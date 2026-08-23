@@ -22,7 +22,7 @@ export default function LoginPage() {
         
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-slate-100">Welcome Back</h2>
+          <h2 className="text-2xl font-bold text-slate-100">Sign in to ArtHub</h2>
           <p className="text-xs text-slate-400 mt-1">Please enter your details to sign in</p>
         </div>
 
