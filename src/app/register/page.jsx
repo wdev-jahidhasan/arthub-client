@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import { imageUpload } from "@/lib/imageUpload";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -25,17 +25,16 @@ export default function RegisterPage() {
     }
   };
 
-  // social login
+  // Google Login
   const handleGoogleAuth = async () => {
-    // try {
-    //   await authClient.signIn.social({
-    //     provider: "google",
-    //     callbackURL: "/",
-    //   });
-    // } catch (err) {
-    //   console.error("Google Auth Error:", err);
-    // }
-    alert('Google Sign In Clicked');
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch (err) {
+      console.error("Google Auth Error:", err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -87,8 +86,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+    <div className="bg-slate-950 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
 
         {/* Header */}
         <div className="text-center mb-6">

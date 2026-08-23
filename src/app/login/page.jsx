@@ -14,19 +14,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Google Social Auth Handler
+  // Google Login
   const handleGoogleAuth = async () => {
-    // try {
-    //   setError("");
-    //   await authClient.signIn.social({
-    //     provider: "google",
-    //     callbackURL: "/",
-    //   });
-    // } catch (err) {
-    //   setError("Google sign-in failed. Please try again.");
-    //   console.error(err);
-    // }
-    alert('Google Login Button Clicked')
+    try {
+      setError("");
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch (err) {
+      setError("Google sign-in failed. Please try again.");
+      console.error(err);
+    }
   };
 
   // Email & Password Credentials Login Handler
@@ -59,9 +58,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
+    <div className="bg-slate-950 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-        
+
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-slate-100">Sign in to ArtHub</h2>
