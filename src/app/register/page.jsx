@@ -25,6 +25,7 @@ export default function RegisterPage() {
     }
   };
 
+  // social login
   const handleGoogleAuth = async () => {
     // try {
     //   await authClient.signIn.social({
@@ -34,7 +35,7 @@ export default function RegisterPage() {
     // } catch (err) {
     //   console.error("Google Auth Error:", err);
     // }
-    console.log('Google Sign In Clicked');
+    alert('Google Sign In Clicked');
   };
 
   const handleSubmit = async (e) => {

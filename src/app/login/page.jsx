@@ -2,18 +2,60 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleGoogleAuth = () => {
-    // Better Auth Integration Here
-    console.log("Google Login Clicked");
+  // Google Social Auth Handler
+  const handleGoogleAuth = async () => {
+    // try {
+    //   setError("");
+    //   await authClient.signIn.social({
+    //     provider: "google",
+    //     callbackURL: "/",
+    //   });
+    // } catch (err) {
+    //   setError("Google sign-in failed. Please try again.");
+    //   console.error(err);
+    // }
+    alert('Google Login Button Clicked')
   };
 
-  const handleSubmit = (e) => {
+  // Email & Password Credentials Login Handler
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Better Auth Credentials Login Here
+    setLoading(true);
+    setError("");
+
+    await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        onRequest: () => {
+          setLoading(true);
+        },
+        onSuccess: () => {
+          setLoading(false);
+          toast.success('Logged in successfully!')
+          router.push("/");
+        },
+        onError: (ctx) => {
+          setLoading(false);
+          console.log("Login Error Context:", ctx.error);
+          setError(ctx.error.message || "Invalid email or password");
+        },
+      }
+    );
   };
 
   return (
@@ -26,12 +68,21 @@ export default function LoginPage() {
           <p className="text-xs text-slate-400 mt-1">Please enter your details to sign in</p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs text-center">
+            {error}
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#7A156E] transition-colors"
@@ -43,6 +94,8 @@ export default function LoginPage() {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#7A156E] transition-colors pr-10"
@@ -69,9 +122,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#7A156E] hover:bg-[#A31D93] text-white font-bold text-sm py-2.5 rounded-xl transition-all shadow-md shadow-[#7A156E]/30 border border-[#A31D93] active:scale-[0.98] mt-2"
+            disabled={loading}
+            className="w-full bg-[#7A156E] hover:bg-[#A31D93] text-white font-bold text-sm py-2.5 rounded-xl transition-all shadow-md shadow-[#7A156E]/30 border border-[#A31D93] active:scale-[0.98] mt-2 disabled:opacity-50"
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
