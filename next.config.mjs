@@ -3,19 +3,31 @@ const nextConfig = {
   /* config options here */
   reactCompiler: true,
   images: {
+    
     remotePatterns: [
+      // all sites
+
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: '**',
       },
-      {
-        protocol: 'https',
-        hostname: 'flagcdn.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-      },
+
+      // {
+      //   protocol: 'https',
+      //   hostname: 'i.ibb.co',
+      // },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'images.unsplash.com',
+      // },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'flagcdn.com',
+      // },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'picsum.photos',
+      // },
     ],
   },
 };

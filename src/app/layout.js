@@ -1,17 +1,13 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Toaster } from "react-hot-toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const notoSans = Noto_Sans({
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-noto-sans",
 });
 
 export const metadata = {
@@ -26,14 +22,14 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${notoSans.variable} ${notoSans.className} antialiased`}
     >
-      <body className="flex flex-col">
+      <body className="flex flex-col min-h-screen bg-[#030712] text-slate-100">
         <Navbar />
         <main className="flex-1">
           <Toaster position="top-right" reverseOrder={false} />
           {children}
-          </main>
+        </main>
         <Footer />
       </body>
     </html>
