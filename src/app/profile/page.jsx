@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "@/lib/auth-client";
 import { imageUpload } from "@/lib/imageUpload";
+import toast from "react-hot-toast";
 
 export default function ProfileDetails() {
   const { data: session, isPending, error } = useSession();
@@ -58,26 +59,43 @@ export default function ProfileDetails() {
     }
   };
 
-  // Save / Form Submit Handler
+  // update functionality
   const handleSave = async (e) => {
     e.preventDefault();
     setIsUploading(true);
 
-    try {
-      let imageUrl = user.image;
+    let imageUrl = user.image;
 
-      if (selectedFile) {
-        imageUrl = await imageUpload(selectedFile);
-      }
-
-      console.log("Saving Profile Data:", { name, image: imageUrl });
-
-      setIsOpen(false);
-    } catch (err) {
-      console.error("Failed to update profile:", err);
-    } finally {
-      setIsUploading(false);
+    if (selectedFile) {
+      imageUrl = await imageUpload(selectedFile);
     }
+
+    const res = await fetch("http://localhost:5000/api/users/update", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: user.email,
+        name: name,
+        image: imageUrl,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setIsOpen(false);
+      toast.success("Profile Updated Successfully!", {
+        duration: 3000,
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+
+    setIsUploading(false);
   };
 
   return (
@@ -157,7 +175,7 @@ export default function ProfileDetails() {
           <div className="w-full max-w-md bg-[#0b0f17] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden text-white">
             <div className="p-4 border-b border-gray-800 flex justify-between items-center">
               <h3 className="font-bold text-lg">Edit Profile</h3>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-white"
                 disabled={isUploading}
@@ -165,31 +183,31 @@ export default function ProfileDetails() {
                 ✕
               </button>
             </div>
-            
+
             <form onSubmit={handleSave} className="p-5 space-y-4">
               {/* Image Picker Section */}
               <div className="flex flex-col items-center gap-3">
                 <div className="w-20 h-20 rounded-full border border-purple-500/50 overflow-hidden bg-[#121824] relative flex items-center justify-center">
                   {previewUrl ? (
-                    <Image 
-                      src={previewUrl} 
-                      alt="Preview" 
+                    <Image
+                      src={previewUrl}
+                      alt="Preview"
                       width={80}
                       height={80}
-                      className="w-full h-full object-cover rounded-full" 
+                      className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">No Pic</div>
                   )}
                 </div>
-                
+
                 <label className="cursor-pointer bg-[#121824] border border-gray-700 hover:border-purple-500 px-4 py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition">
                   Choose New Photo
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleFileChange} 
-                    className="hidden" 
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
                   />
                 </label>
               </div>
