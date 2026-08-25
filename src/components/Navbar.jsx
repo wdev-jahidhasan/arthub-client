@@ -138,7 +138,7 @@ export default function Navbar() {
                   className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
                   onClick={() => setIsNavOpen(false)}
                 />
-                <div className="absolute left-0 mt-3 w-64 bg-[#070b14] rounded-2xl p-4 flex flex-col space-y-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/40">
+                <div className="absolute left-0 mt-3 w-48 bg-[#070b14] rounded-2xl p-4 flex flex-col space-y-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/40">
                   <Link
                     href="/"
                     onClick={() => setIsNavOpen(false)}
@@ -163,14 +163,14 @@ export default function Navbar() {
                   </Link>
                   
                   {/* Mobile View Dashboard Sidebar Wrapper */}
-                  <div className="border-t border-slate-800/80 pt-3">
+                  {/* <div className="border-t border-slate-800/80 pt-3">
                     <p className="px-3 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                       Dashboard Navigation
                     </p>
                     <div onClick={() => setIsNavOpen(false)} className="rounded-xl overflow-hidden">
                       <DashboardSidebar />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </>
             )}

@@ -1,15 +1,15 @@
-"use client"
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const bannerImages = [
-  // "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1600&q=80",
-  // "https://images.unsplash.com/photo-1549887534-1541e9326642?auto=format&fit=crop&w=1600&q=80",
 ];
 
 const HeroBanner = () => {
@@ -43,20 +43,42 @@ const HeroBanner = () => {
       ))}
 
       <div className="relative z-20 h-full max-w-4xl mx-auto px-6 flex flex-col justify-center items-center text-center">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-          Discover & Buy{" "}
-          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-amber-400 bg-clip-text text-transparent">
-            Original Art
-          </span>
-        </h1>
+        {/* 60fps Ultra Smooth Clip-Path Typewriter Animation */}
+        <div className="relative overflow-hidden py-2">
+          <motion.h1
+            className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight whitespace-nowrap"
+            initial={{ clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)" }}
+            animate={{
+              clipPath: [
+                "polygon(0 0, 0 0, 0 100%, 0 100%)",
+                "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                "polygon(0 0, 0 0, 0 100%, 0 100%)",
+              ],
+            }}
+            transition={{
+              duration: 7, 
+              repeat: Infinity, 
+              ease: "easeInOut", 
+              times: [0, 0.45, 0.75, 1],
+            }}
+          >
+            Discover & Buy{" "}
+            <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-amber-400 bg-clip-text text-transparent">
+              Original Art
+            </span>
+          </motion.h1>
+        </div>
+
         <p className="mt-4 text-slate-300 text-base md:text-xl max-w-2xl">
           Explore unique masterworks created by independent artists worldwide.
         </p>
+
         <div className="mt-8">
           <Link href={"/artworks"}>
-          <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-3.5 rounded-2xl shadow-xl shadow-purple-950/50 transition duration-300 transform hover:-translate-y-0.5">
-            Browse Artworks
-          </button>
+            <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-3.5 rounded-2xl shadow-xl shadow-purple-950/50 transition duration-300 transform hover:-translate-y-0.5">
+              Browse Artworks
+            </button>
           </Link>
         </div>
       </div>
