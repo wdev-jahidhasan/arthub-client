@@ -1,3 +1,4 @@
+import DashboardNavbar from "@/components/dashboardComp/DashboardNavbar";
 import DashboardSidebar from "@/components/dashboardComp/DashboardSidebar";
 
 export default function DashboardLayout({ children }) {
@@ -9,8 +10,8 @@ export default function DashboardLayout({ children }) {
 
         <div className="flex-1 overflow-y-auto">
           {/* Navbar */}
-          <div className="border border-yellow-300 w-full">Navbar</div>
-          <main className="p-5">
+          <DashboardNavbar></DashboardNavbar>
+          <main>
             {children}
           </main>
         </div>

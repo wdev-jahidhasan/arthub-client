@@ -18,9 +18,9 @@ const UserProfileMenu = ({ user, handleSignOut, isOpen, setIsOpen }) => (
           <Image
             src={user.image}
             alt={user?.name || "User Avatar"}
-            width={36}
-            height={36}
-            className="w-full h-full object-cover rounded-full"
+            fill
+            sizes="36px"
+            className="object-cover rounded-full"
             unoptimized={true}
           />
         </div>
@@ -90,14 +90,8 @@ const UserProfileMenu = ({ user, handleSignOut, isOpen, setIsOpen }) => (
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
 
-
-  const pathname = usePathname()
-  if(pathname.includes("dashboard")){
-    return null
-  }
-  
-  // State for menus
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -116,10 +110,14 @@ export default function Navbar() {
     });
   };
 
+  if (pathname.includes("dashboard")) {
+    return null;
+  }
+
   return (
     <nav className="bg-[#030712] text-slate-100 border-b border-slate-800/60 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        
+
         {/* MOBILE VIEW (Screen < sm) */}
         <div className="flex sm:hidden items-center justify-between w-full">
           <div className="relative">
@@ -164,15 +162,15 @@ export default function Navbar() {
             {isPending ? (
               <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse" />
             ) : session ? (
-              <UserProfileMenu 
-                user={user} 
-                handleSignOut={handleSignOut} 
+              <UserProfileMenu
+                user={user}
+                handleSignOut={handleSignOut}
                 isOpen={isProfileOpen}
                 setIsOpen={setIsProfileOpen}
               />
             ) : (
-              <Link 
-                href="/login" 
+              <Link
+                href="/login"
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-md shadow-purple-950/50"
               >
                 Sign In
@@ -198,15 +196,15 @@ export default function Navbar() {
             {isPending ? (
               <div className="w-9 h-9 rounded-full bg-slate-800 animate-pulse" />
             ) : session ? (
-              <UserProfileMenu 
-                user={user} 
-                handleSignOut={handleSignOut} 
+              <UserProfileMenu
+                user={user}
+                handleSignOut={handleSignOut}
                 isOpen={isProfileOpen}
                 setIsOpen={setIsProfileOpen}
               />
             ) : (
-              <Link 
-                href="/login" 
+              <Link
+                href="/login"
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-6 py-2.5 rounded-xl transition duration-300 shadow-lg shadow-purple-950/50 transform hover:-translate-y-0.5"
               >
                 Sign In
