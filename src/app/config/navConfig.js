@@ -25,7 +25,7 @@ export const navConfig = {
   user: [
     { label: "Dashboard Home Page", href: "/dashboard/user", icon: LayoutDashboard },
     { label: "Purchase History", href: "/dashboard/user/purchase-history", icon: History },
-    { label: "My Collection", href: "/dashboard/user/bought-artworks", icon: Grid },
+    { label: "Bought Artworks", href: "/dashboard/user/bought-artworks", icon: Grid },
     // { label: "Wishlist", href: "/dashboard/user/wishlist", icon: Heart },
     { label: "Subscription Tier", href: "/dashboard/user/subscription", icon: Crown },
     { label: "My Reviews", href: "/dashboard/user/reviews", icon: Star },
