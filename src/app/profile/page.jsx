@@ -40,8 +40,15 @@ export default function ProfileDetails() {
   const { user } = session;
   const userInitial = user.name ? user.name.charAt(0).toUpperCase() : "U";
 
-  const userRole = user.role || "Artist / Creator";
+  // Role Logic Check
+  const rawRole = user.role ? user.role.toLowerCase() : "user";
+  const userRoleDisplay = user.role || "User";
   const artworksCount = user.artworksCount || 0;
+  const userPlan = user.plan || "Free Plan"; // API/Session static fallback
+
+  const isUser = rawRole === "user";
+  const isArtist = rawRole === "artist";
+  const isAdmin = rawRole === "admin";
 
   // Modal Open Handler
   const handleOpenEditModal = () => {
@@ -59,7 +66,7 @@ export default function ProfileDetails() {
     }
   };
 
-  // update functionality
+  // Update Functionality
   const handleSave = async (e) => {
     e.preventDefault();
     setIsUploading(true);
@@ -70,7 +77,7 @@ export default function ProfileDetails() {
       imageUrl = await imageUpload(selectedFile);
     }
 
-    const res = await fetch("http://localhost:5000/api/users/update", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/update`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -139,25 +146,41 @@ export default function ProfileDetails() {
           </span>
         </div>
 
-        {/* Role & Artworks */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Dynamic Details Grid based on Role */}
+        <div className={`grid gap-3 ${isAdmin ? "grid-cols-1" : "grid-cols-2"}`}>
+          {/* Role (All Users) */}
           <div className="bg-[#121824] p-4 rounded-xl border border-gray-800/80">
             <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
               Role
             </span>
-            <span className="text-sm font-semibold text-purple-300">
-              {userRole}
+            <span className="text-sm font-semibold text-purple-300 capitalize">
+              {userRoleDisplay}
             </span>
           </div>
 
-          <div className="bg-[#121824] p-4 rounded-xl border border-gray-800/80">
-            <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
-              Artworks
-            </span>
-            <span className="text-sm font-semibold text-gray-200">
-              {artworksCount} Items
-            </span>
-          </div>
+          {/* Plan (Visible for User and Artist) */}
+          {(isUser || isArtist) && (
+            <div className="bg-[#121824] p-4 rounded-xl border border-gray-800/80">
+              <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                Plan
+              </span>
+              <span className="text-sm font-semibold text-pink-400 capitalize">
+                {userPlan}
+              </span>
+            </div>
+          )}
+
+          {/* Artworks Count (Visible ONLY for Artist) */}
+          {isArtist && (
+            <div className="bg-[#121824] p-4 rounded-xl border border-gray-800/80 col-span-2">
+              <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                Artworks
+              </span>
+              <span className="text-sm font-semibold text-gray-200">
+                {artworksCount} Items
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -169,7 +192,7 @@ export default function ProfileDetails() {
         Edit Profile
       </button>
 
-      {/* Edit Modal (PC File Picker & ImgBB Upload) */}
+      {/* Edit Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
           <div className="w-full max-w-md bg-[#0b0f17] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden text-white">
@@ -197,7 +220,9 @@ export default function ProfileDetails() {
                       className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">No Pic</div>
+                    <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                      No Pic
+                    </div>
                   )}
                 </div>
 
@@ -214,7 +239,9 @@ export default function ProfileDetails() {
 
               {/* Name Input */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-medium">Name</label>
+                <label className="block text-xs text-gray-400 mb-1.5 font-medium">
+                  Name
+                </label>
                 <input
                   type="text"
                   value={name}
