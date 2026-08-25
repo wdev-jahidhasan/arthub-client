@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const bannerImages = [
   // "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1600&q=80",
@@ -52,9 +53,11 @@ const HeroBanner = () => {
           Explore unique masterworks created by independent artists worldwide.
         </p>
         <div className="mt-8">
+          <Link href={"/artworks"}>
           <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-3.5 rounded-2xl shadow-xl shadow-purple-950/50 transition duration-300 transform hover:-translate-y-0.5">
             Browse Artworks
           </button>
+          </Link>
         </div>
       </div>
 
