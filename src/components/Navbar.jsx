@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import DashboardSidebar from "./dashboardComp/DashboardSidebar";
 
 const UserProfileMenu = ({ user, handleSignOut, isOpen, setIsOpen }) => (
   <div className="relative">
@@ -94,9 +95,12 @@ export default function Navbar() {
 
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
+
+  const isActive = (path) => pathname === path || pathname.startsWith(`${path}/`);
 
   const handleSignOut = async () => {
     setIsProfileOpen(false);
@@ -131,31 +135,42 @@ export default function Navbar() {
             {isNavOpen && (
               <>
                 <div
-                  className="fixed inset-0 z-40 bg-transparent"
+                  className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
                   onClick={() => setIsNavOpen(false)}
                 />
-                <div className="absolute left-0 mt-3 w-52 bg-[#070b14] rounded-2xl p-4 flex flex-col space-y-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/40">
+                <div className="absolute left-0 mt-3 w-64 bg-[#070b14] rounded-2xl p-4 flex flex-col space-y-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/40">
                   <Link
                     href="/"
                     onClick={() => setIsNavOpen(false)}
-                    className="text-slate-300 hover:text-pink-400 transition font-medium"
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition ${
+                      isActive("/") && pathname === "/"
+                        ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-semibold"
+                        : "text-slate-300 hover:text-pink-400 hover:bg-slate-800/50"
+                    }`}
                   >
                     Home
                   </Link>
                   <Link
                     href="/artworks"
                     onClick={() => setIsNavOpen(false)}
-                    className="text-slate-300 hover:text-pink-400 transition font-medium"
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition ${
+                      isActive("/artworks")
+                        ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-semibold"
+                        : "text-slate-300 hover:text-pink-400 hover:bg-slate-800/50"
+                    }`}
                   >
                     Browse Artworks
                   </Link>
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsNavOpen(false)}
-                    className="text-slate-300 hover:text-pink-400 transition font-medium"
-                  >
-                    Dashboard
-                  </Link>
+                  
+                  {/* Mobile View Dashboard Sidebar Wrapper */}
+                  <div className="border-t border-slate-800/80 pt-3">
+                    <p className="px-3 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      Dashboard Navigation
+                    </p>
+                    <div onClick={() => setIsNavOpen(false)} className="rounded-xl overflow-hidden">
+                      <DashboardSidebar />
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -192,34 +207,90 @@ export default function Navbar() {
             Art<span className="bg-gradient-to-r from-purple-400 via-pink-500 to-amber-400 bg-clip-text text-transparent">Hub</span>
           </Link>
 
-          <div className="flex items-center space-x-8 text-sm font-semibold text-slate-300">
-            <Link href="/" className="hover:text-pink-400 transition-colors">
+          <div className="flex items-center space-x-2 text-sm font-semibold text-slate-300">
+            <Link
+              href="/"
+              className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+                isActive("/") && pathname === "/"
+                  ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
+                  : "hover:text-pink-400 hover:bg-slate-800/40"
+              }`}
+            >
               Home
             </Link>
-            <Link href="/artworks" className="hover:text-pink-400 transition-colors">
+            <Link
+              href="/artworks"
+              className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+                isActive("/artworks")
+                  ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
+                  : "hover:text-pink-400 hover:bg-slate-800/40"
+              }`}
+            >
               Browse Artworks
             </Link>
-            <Link href="/dashboard" className="hover:text-pink-400 transition-colors">
-              Dashboard
-            </Link>
 
-            {isPending ? (
-              <div className="w-9 h-9 rounded-full bg-slate-800 animate-pulse" />
-            ) : session ? (
-              <UserProfileMenu
-                user={user}
-                handleSignOut={handleSignOut}
-                isOpen={isProfileOpen}
-                setIsOpen={setIsProfileOpen}
-              />
-            ) : (
-              <Link
-                href="/login"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-6 py-2.5 rounded-xl transition duration-300 shadow-lg shadow-purple-950/50 transform hover:-translate-y-0.5"
+            {/* DASHBOARD DROPDOWN TRIGGER */}
+            <div className="relative">
+              <button
+                onClick={() => setIsDashboardOpen(!isDashboardOpen)}
+                className={`px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5 select-none outline-none ${
+                  isActive("/dashboard") || isDashboardOpen
+                    ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
+                    : "hover:text-pink-400 hover:bg-slate-800/40 text-slate-300"
+                }`}
               >
-                Sign In
-              </Link>
-            )}
+                Dashboard
+                <svg
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isDashboardOpen ? "rotate-180 text-pink-400" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* DASHBOARD SIDEBAR CONTAINER (DESKTOP) */}
+              {isDashboardOpen && (
+                <>
+                  {/* Backdrop */}
+                  <div
+                    className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity"
+                    onClick={() => setIsDashboardOpen(false)}
+                  />
+
+                  {/* Floating Sidebar Drawer */}
+                  <div 
+                    className="absolute left-0 mt-3 w-72 max-h-[calc(100vh-100px)] overflow-y-auto bg-[#070b14] rounded-2xl p-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/50 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-200"
+                    onClick={() => setIsDashboardOpen(false)}
+                  >
+                    <DashboardSidebar />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="pl-4">
+              {isPending ? (
+                <div className="w-9 h-9 rounded-full bg-slate-800 animate-pulse" />
+              ) : session ? (
+                <UserProfileMenu
+                  user={user}
+                  handleSignOut={handleSignOut}
+                  isOpen={isProfileOpen}
+                  setIsOpen={setIsProfileOpen}
+                />
+              ) : (
+                <Link
+                  href="/login"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-6 py-2.5 rounded-xl transition duration-300 shadow-lg shadow-purple-950/50 transform hover:-translate-y-0.5 block"
+                >
+                  Sign In
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 

@@ -6,7 +6,7 @@ import {
 
 export const navConfig = {
   admin: [
-    { label: "Dashboard Home Page", href: "/dashboard/admin", icon: LayoutDashboard },
+    { label: "Dashboard Home", href: "/dashboard/admin", icon: LayoutDashboard },
     { label: "Manage Users", href: "/dashboard/admin/manage-users", icon: Users },
     { label: "Manage Artworks", href: "/dashboard/admin/artworks", icon: Palette },
     { label: "Manage Transactions", href: "/dashboard/admin/transactions", icon: Receipt },
@@ -15,7 +15,7 @@ export const navConfig = {
     { label: "ArtHub Home Page", href: "/", icon: Globe },
   ],
   artist: [
-    { label: "Dashboard Home Page", href: "/dashboard/artist", icon: LayoutDashboard },
+    { label: "Dashboard Home", href: "/dashboard/artist", icon: LayoutDashboard },
     { label: "My Artworks", href: "/dashboard/artist/artworks", icon: Palette },
     { label: "Add New Artwork", href: "/dashboard/artist/add-artwork", icon: PlusCircle },
     { label: "Sales History", href: "/dashboard/artist/sales-history", icon: DollarSign },
@@ -23,7 +23,7 @@ export const navConfig = {
     { label: "ArtHub Home Page", href: "/", icon: Globe },
   ],
   user: [
-    { label: "Dashboard Home Page", href: "/dashboard/user", icon: LayoutDashboard },
+    { label: "Dashboard Home", href: "/dashboard/user", icon: LayoutDashboard },
     { label: "Purchase History", href: "/dashboard/user/purchase-history", icon: History },
     { label: "Bought Artworks", href: "/dashboard/user/bought-artworks", icon: Grid },
     // { label: "Wishlist", href: "/dashboard/user/wishlist", icon: Heart },
