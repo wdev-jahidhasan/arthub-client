@@ -149,6 +149,13 @@ export default function Navbar() {
                   >
                     Browse Artworks
                   </Link>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsNavOpen(false)}
+                    className="text-slate-300 hover:text-pink-400 transition font-medium"
+                  >
+                    Dashboard
+                  </Link>
                 </div>
               </>
             )}
@@ -191,6 +198,9 @@ export default function Navbar() {
             </Link>
             <Link href="/artworks" className="hover:text-pink-400 transition-colors">
               Browse Artworks
+            </Link>
+            <Link href="/dashboard" className="hover:text-pink-400 transition-colors">
+              Dashboard
             </Link>
 
             {isPending ? (
