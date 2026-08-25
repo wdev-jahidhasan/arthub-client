@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 const UserProfileMenu = ({ user, handleSignOut, isOpen, setIsOpen }) => (
@@ -90,6 +90,12 @@ const UserProfileMenu = ({ user, handleSignOut, isOpen, setIsOpen }) => (
 
 export default function Navbar() {
   const router = useRouter();
+
+
+  const pathname = usePathname()
+  if(pathname.includes("dashboard")){
+    return null
+  }
   
   // State for menus
   const [isNavOpen, setIsNavOpen] = useState(false);
