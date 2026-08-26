@@ -1,32 +1,19 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const ArtWorksPage = () => {
-  const [artworks, setArtworks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/artworks`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setArtworks(data.data);
-        }
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="bg-[#0b0f19] flex items-center justify-center min-h-screen text-slate-300">
-        <div className="flex items-center space-x-3">
-          <div className="w-5 h-5 border-2 border-[#831867] border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-sm font-medium tracking-wide">Loading artworks...</span>
-        </div>
-      </div>
-    );
+const ArtWorksPage = async () => {
+  let artworks = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/artworks`, {
+      cache: 'no-store',
+    });
+    const data = await res.json();
+    if (data.success) {
+      artworks = data.data;
+    }
+  } catch (error) {
+    console.error('Failed to fetch artworks:', error);
   }
 
   return (
@@ -48,6 +35,7 @@ const ArtWorksPage = () => {
                   src={art.imageUrl}
                   alt={art.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 />
                 
@@ -67,13 +55,13 @@ const ArtWorksPage = () => {
                 </span>
               </div>
 
-              {/* Description with Inline View Details Link */}
+              {/* Description */}
               <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
                 {art.description}
               </p>
             </div>
 
-            {/* Ellipsis / Inline Text Link */}
+            {/* View Details Link */}
             <div className="mt-3 pt-2 border-t border-slate-800/60 flex justify-end">
               <Link
                 href={`/artworks/${art._id}`}
