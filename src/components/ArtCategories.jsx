@@ -1,5 +1,5 @@
 import React from "react";
-import { Palette, Monitor, Component, Camera } from "lucide-react";
+import { Palette, Monitor, Component, Pencil } from "lucide-react";
 
 const categories = [
   {
@@ -21,10 +21,10 @@ const categories = [
     description: "Handcrafted 3D forms, clay & stone structures.",
   },
   {
-    name: "Photography",
-    filter: "photography",
-    icon: Camera,
-    description: "High-res moments captured in vivid detail.",
+    name: "Sketch",
+    filter: "sketch",
+    icon: Pencil,
+    description: "Hand-drawn graphite, charcoal & ink artwork.",
   },
 ];
 
