@@ -8,7 +8,7 @@ export default function DashboardSidebar() {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <div className="p-4 text-gray-400 text-sm hidden md:block w-64">Loading menu...</div>;
+    return <div className="p-4 text-gray-400 text-sm  w-64">Loading menu...</div>;
   }
 
   const userRole = session?.user?.role || 'user';
