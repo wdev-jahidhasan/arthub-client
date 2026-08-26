@@ -30,9 +30,9 @@ const DashboardNavbar = () => {
       <div className="flex items-center gap-3 min-w-0">
         {/* Hamburger Menu Trigger */}
         <div className="md:hidden shrink-0">
-          <Button 
+          <Button
             isIconOnly
-            variant="ghost" 
+            variant="ghost"
             size="sm"
             className="bg-black text-white border border-white/20 h-9 w-9 min-w-0"
             onPress={() => setIsOpen(true)}
@@ -44,7 +44,7 @@ const DashboardNavbar = () => {
         {/* User Greeting & Badges Container */}
         <div className="flex flex-col gap-1 min-w-0">
           <h1 className="text-sm sm:text-base font-bold text-white truncate">
-            Hello, <span className="text-pink-500 capitalize">{userName}</span>
+            <span className="text-pink-500 capitalize">{userName}</span>
           </h1>
 
           {/* Role & Plan Badges in One Line */}
@@ -63,7 +63,7 @@ const DashboardNavbar = () => {
       {/* Mobile Drawer Menu */}
       <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
         <Drawer.Backdrop>
-          <Drawer.Content placement="left">
+          <Drawer.Content placement="left" className={'w-[40%]'}>
             <Drawer.Dialog className="bg-black border-r border-white/10">
               <Drawer.CloseTrigger />
               <Drawer.Header>

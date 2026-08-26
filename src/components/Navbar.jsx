@@ -161,7 +161,7 @@ export default function Navbar() {
                   </Link>
 
                   {/* MOBILE DASHBOARD SIDEBAR MENU */}
-                  {session && (
+                  {/* {session && (
                     <div className="border-t border-slate-800/80 pt-3 mt-2">
                       <p className="px-2 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         Dashboard Navigation
@@ -170,7 +170,7 @@ export default function Navbar() {
                         <DashboardSidebar />
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </>
             )}
