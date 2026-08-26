@@ -1,9 +1,10 @@
+import DashboardHome from '@/components/dashboardComp/DashboardHome';
 import React from 'react';
 
 const UserDashBoardHomePage = () => {
   return (
     <div>
-      UserDashBoardHomePage
+      <DashboardHome></DashboardHome>
     </div>
   );
 };

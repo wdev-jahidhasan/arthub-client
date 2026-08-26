@@ -1,9 +1,10 @@
+import DashboardHome from '@/components/dashboardComp/DashboardHome';
 import React from 'react';
 
 const AdminDashboardHomePage = () => {
   return (
     <div>
-      AdminDashboardHomePage
+      <DashboardHome></DashboardHome>
     </div>
   );
 };

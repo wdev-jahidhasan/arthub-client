@@ -1,9 +1,10 @@
+import DashboardHome from '@/components/dashboardComp/DashboardHome';
 import React from 'react';
 
 const ArtistDashboardHomePage = () => {
   return (
     <div>
-      ArtistDashboardHomePage
+      <DashboardHome></DashboardHome>
     </div>
   );
 };
