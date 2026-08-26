@@ -138,7 +138,7 @@ export default function Navbar() {
                   className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
                   onClick={() => setIsNavOpen(false)}
                 />
-                <div className="absolute left-0 mt-3 w-64 max-h-[85vh] overflow-y-auto bg-[#070b14] rounded-2xl p-4 flex flex-col space-y-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/40">
+                <div className="absolute left-0 mt-3 w-48 max-h-[85vh] overflow-y-auto bg-[#070b14] rounded-2xl p-4 flex flex-col space-y-3 z-50 border border-slate-800 shadow-2xl shadow-purple-950/40">
                   <Link
                     href="/"
                     onClick={() => setIsNavOpen(false)}
