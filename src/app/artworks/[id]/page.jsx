@@ -1,3 +1,4 @@
+import PurchaseButton from '@/components/dashboardComp/PurchaseButton';
 import React from 'react';
 
 async function getSingleArtwork(id) {
@@ -32,7 +33,7 @@ const ArtworkDetailsPage = async ({ params }) => {
 
   return (
     <div className="bg-slate-950 text-slate-100 py-16 px-4 flex items-center justify-center relative overflow-hidden">
-      
+
       {/* Background Ambient Glows (Purple/Magenta Theme) */}
       <div className="absolute top-1/4 left-1/6 w-[30rem] h-[30rem] bg-purple-600/15 rounded-full blur-[128px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/6 w-[30rem] h-[30rem] bg-pink-600/15 rounded-full blur-[128px] pointer-events-none" />
@@ -40,7 +41,7 @@ const ArtworkDetailsPage = async ({ params }) => {
       {/* Main Glassmorphism Container */}
       <div className="max-w-5xl w-full bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-8 md:p-12 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* Image Section */}
           <div className="lg:col-span-5 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 shadow-inner group">
             <img
@@ -88,9 +89,21 @@ const ArtworkDetailsPage = async ({ params }) => {
               </div>
 
               {/* 🎨 Purple to Pink Signature Gradient Button */}
-              <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-bold tracking-wide shadow-lg shadow-purple-600/30 transition-all duration-300 hover:shadow-pink-500/50 active:scale-95">
-                Purchase Now
-              </button>
+              {/* <form action={'/api/payment'} method="POST">
+                <input type = "hidden" name="price" value={artwork.price}></input>
+                <input type = "hidden" name="title" value={artwork.title}></input>
+                <input type = "hidden" name="artworkId" value={artwork._id}></input>
+
+                <button type='submit' className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-bold tracking-wide shadow-lg shadow-purple-600/30 transition-all duration-300 hover:shadow-pink-500/50 active:scale-95">
+                  Purchase Now
+                </button>
+              </form> */}
+
+              <PurchaseButton
+                price={artwork.price}
+                title={artwork.title}
+                artworkId={artwork._id}
+              />
             </div>
 
           </div>
