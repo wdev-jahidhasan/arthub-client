@@ -15,6 +15,7 @@ const subscriptions = [
     matchKeys: ['pro'],
     maxPurchases: '9 paintings',
     price: '$9.99',
+    priceId: 'price_1U8w6cKHXvLYFDqO6oYLL4tq',
     description: 'Perfect for passionate art collectors and enthusiasts.',
     features: ['Up to 9 painting purchases', 'Priority customer support', 'Early access to new art pieces'],
     popular: true,
@@ -24,21 +25,43 @@ const subscriptions = [
     matchKeys: ['premium', 'unlimited'],
     maxPurchases: 'Unlimited',
     price: '$19.99',
-    description: 'Designed for serious collectors with zero limitations.',
+    priceId: 'price_1U8wusKHXvLYFDqOJRufb6I8',
+    description: 'Designed for zero limitations.',
     features: ['Unlimited painting purchases', 'Dedicated VIP support', 'Exclusive premium gallery access'],
   },
 ];
 
 const UserSubscriptionPage = () => {
   const [userPlanFromDB, setUserPlanFromDB] = useState('free');
-  const [loading, setLoading] = useState(false);
+  const [loadingTier, setLoadingTier] = useState(null);
 
-  const handleUpgrade = (tierName) => {
-    setLoading(true);
-    setTimeout(() => {
-      alert(`Redirecting to checkout for ${tierName} plan...`);
-      setLoading(false);
-    }, 1000);
+  const handleCheckout = async (tier) => {
+    if (tier.tier === 'Free') return;
+
+    setLoadingTier(tier.tier);
+    try {
+      const response = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          priceId: tier.priceId,
+          mode: 'subscription'
+        }),
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Something went wrong during checkout.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoadingTier(null);
+    }
   };
 
   return (
@@ -53,11 +76,12 @@ const UserSubscriptionPage = () => {
         </p>
       </div>
 
-      {/* Responsive Grid: Mobile-1, Tablet-2, Desktop-3 */}
+      {/* Responsive Grid */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {subscriptions.map((sub, index) => {
           const normalizedUserPlan = userPlanFromDB ? userPlanFromDB.toLowerCase().trim() : '';
           const isCurrent = sub.matchKeys.includes(normalizedUserPlan);
+          const isLoading = loadingTier === sub.tier;
 
           return (
             <div
@@ -68,18 +92,14 @@ const UserSubscriptionPage = () => {
                   : 'bg-[#121217] border-gray-800'
               }`}
             >
-              {/* Top Section */}
               <div>
-                {/* Badges Area */}
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold text-gray-100">{sub.tier}</h3>
-                  
                   {sub.popular && !isCurrent && (
                     <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
                       Popular
                     </span>
                   )}
-
                   {isCurrent && (
                     <span className="bg-pink-500/20 text-pink-400 text-xs font-semibold px-2.5 py-1 rounded-full border border-pink-500/30">
                       Current Plan
@@ -103,7 +123,6 @@ const UserSubscriptionPage = () => {
                   <strong className="text-white text-sm">{sub.maxPurchases}</strong>
                 </div>
 
-                {/* Features List */}
                 <ul className="space-y-3 mb-6 text-xs sm:text-sm text-gray-300">
                   {sub.features.map((feature, fIdx) => (
                     <li key={fIdx} className="flex items-start gap-2">
@@ -118,15 +137,16 @@ const UserSubscriptionPage = () => {
 
               {/* Action Button */}
               <button
-                disabled={isCurrent || loading}
-                onClick={() => handleUpgrade(sub.tier)}
+                type="button"
+                disabled={isCurrent || isLoading || sub.tier === 'Free'}
+                onClick={() => handleCheckout(sub)}
                 className={`w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-md ${
-                  isCurrent
+                  isCurrent || sub.tier === 'Free'
                     ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
                     : 'bg-pink-600 hover:bg-pink-700 text-white'
                 }`}
               >
-                {isCurrent ? 'Active Plan' : 'Upgrade Now'}
+                {isCurrent ? 'Active Plan' : isLoading ? 'Processing...' : 'Upgrade Now'}
               </button>
             </div>
           );
