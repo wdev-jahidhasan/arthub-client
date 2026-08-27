@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 const subscriptions = [
   {
     tier: 'Free',
-    matchKeys: ['free', 'free (default)', 'default'],
     maxPurchases: '3 paintings',
     price: '$0',
     description: 'Best for exploring the platform and starting your journey.',
@@ -12,7 +11,6 @@ const subscriptions = [
   },
   {
     tier: 'Pro',
-    matchKeys: ['pro'],
     maxPurchases: '9 paintings',
     price: '$9.99',
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
@@ -22,7 +20,6 @@ const subscriptions = [
   },
   {
     tier: 'Premium',
-    matchKeys: ['premium', 'unlimited'],
     maxPurchases: 'Unlimited',
     price: '$19.99',
     priceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID,
@@ -32,7 +29,6 @@ const subscriptions = [
 ];
 
 const UserSubscriptionPage = () => {
-  const [userPlanFromDB, setUserPlanFromDB] = useState('free');
   const [loadingTier, setLoadingTier] = useState(null);
 
   const handleCheckout = async (tier) => {
@@ -79,8 +75,6 @@ const UserSubscriptionPage = () => {
       {/* Responsive Grid */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {subscriptions.map((sub, index) => {
-          const normalizedUserPlan = userPlanFromDB ? userPlanFromDB.toLowerCase().trim() : '';
-          const isCurrent = sub.matchKeys.includes(normalizedUserPlan);
           const isLoading = loadingTier === sub.tier;
 
           return (
@@ -95,14 +89,9 @@ const UserSubscriptionPage = () => {
               <div>
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold text-gray-100">{sub.tier}</h3>
-                  {sub.popular && !isCurrent && (
+                  {sub.popular && (
                     <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
                       Popular
-                    </span>
-                  )}
-                  {isCurrent && (
-                    <span className="bg-pink-500/20 text-pink-400 text-xs font-semibold px-2.5 py-1 rounded-full border border-pink-500/30">
-                      Current Plan
                     </span>
                   )}
                 </div>
@@ -135,18 +124,17 @@ const UserSubscriptionPage = () => {
                 </ul>
               </div>
 
-              {/* Action Button */}
               <button
                 type="button"
-                disabled={isCurrent || isLoading || sub.tier === 'Free'}
+                disabled={sub.tier === 'Free' || isLoading}
                 onClick={() => handleCheckout(sub)}
                 className={`w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-md ${
-                  isCurrent || sub.tier === 'Free'
+                  sub.tier === 'Free'
                     ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
                     : 'bg-pink-600 hover:bg-pink-700 text-white'
                 }`}
               >
-                {isCurrent ? 'Active Plan' : isLoading ? 'Processing...' : 'Upgrade Now'}
+                {sub.tier === 'Free' ? 'Default Plan' : isLoading ? 'Processing...' : 'Upgrade Now'}
               </button>
             </div>
           );
