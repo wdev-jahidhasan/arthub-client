@@ -2,12 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { subscriptionConfig, subscriptions } from '@/app/config/subscriptionConfig';
+import { subscriptionConfig } from '@/app/config/subscriptionConfig';
 
+async function getBoughtArtworks(userId) {
+  if (!userId) return []; 
 
-async function getBoughtArtworks() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases?userId=${userId}`, {
       cache: 'no-store',
     });
 
@@ -24,12 +25,13 @@ async function getBoughtArtworks() {
 }
 
 export default async function UserBoughtArtworksPage() {
-  const [purchases, session] = await Promise.all([
-    getBoughtArtworks(),
-    auth.api.getSession({
-      headers: await headers()
-    })
-  ]);
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+  
+  const userId = session?.user?.id; 
+
+  const purchases = await getBoughtArtworks(userId);
 
   const userPlan = session?.user?.plan || 'Free';
   const totalBought = purchases.length;
@@ -107,7 +109,7 @@ export default async function UserBoughtArtworksPage() {
                   className="bg-[#121217] border border-gray-800/80 rounded-2xl overflow-hidden shadow-lg hover:border-pink-500/40 transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Artwork Image with Next.js Image Component */}
+                    {/* Artwork Image */}
                     <div className="relative w-full h-32 sm:h-40 bg-[#181822] overflow-hidden">
                       {artworkImg ? (
                         <Image 
@@ -122,13 +124,13 @@ export default async function UserBoughtArtworksPage() {
                           No Image
                         </div>
                       )}
-                      {/* Price Badge on image */}
+                      {/* Price Badge */}
                       <span className="absolute top-2 right-2 text-[9px] sm:text-[10px] font-bold text-white bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-md border border-white/10 z-10">
                         ${item.amountTotal} {item.currency?.toUpperCase()}
                       </span>
                     </div>
 
-                    {/* Artwork Details Content */}
+                    {/* Artwork Details */}
                     <div className="p-3 sm:p-4 space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20">
