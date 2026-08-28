@@ -11,7 +11,7 @@ export const navConfig = {
     { label: "Manage Artworks", href: "/dashboard/admin/artworks", icon: Palette },
     { label: "Manage Transactions", href: "/dashboard/admin/transactions", icon: Receipt },
     { label: "Analytics Overview", href: "/dashboard/admin/analytics", icon: BarChart3 },
-    { label: "Platform Settings", href: "/dashboard/admin/settings", icon: Settings },
+    // { label: "Platform Settings", href: "/dashboard/admin/settings", icon: Settings },
     { label: "ArtHub Home Page", href: "/", icon: Globe },
   ],
   artist: [
