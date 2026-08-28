@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function PurchaseButton({ price, title, artworkId, disabled }) {
+export default function PurchaseButton({ price, title, artworkId, imageUrl, disabled }) {
   const [loading, setLoading] = useState(false);
 
   const handlePurchase = async () => {
@@ -11,6 +11,7 @@ export default function PurchaseButton({ price, title, artworkId, disabled }) {
       formData.append('price', price);
       formData.append('title', title);
       formData.append('artworkId', artworkId);
+      formData.append('imageUrl', imageUrl || '');
 
       const res = await fetch('/api/payment', {
         method: 'POST',

@@ -104,6 +104,7 @@ const ArtworkDetailsPage = async ({ params }) => {
                   price={artwork.price}
                   title={artwork.title}
                   artworkId={artwork._id}
+                  imageUrl={artwork.imageUrl || artwork.image}
                   disabled={isArtist}
                 />
                 {isArtist && (

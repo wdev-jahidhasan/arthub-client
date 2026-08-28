@@ -19,13 +19,7 @@ export async function POST(request) {
     const price = formData.get('price');
     const title = formData.get('title');
     const artworkId = formData.get('artworkId');
-
-    // const body = await req.json();
-    // const { priceId } = body;
-
-    // if (!priceId) {
-    //   return NextResponse.json({ error: 'Price ID is required' }, { status: 400 });
-    // }
+    const imageUrl = formData.get('imageUrl');
 
     const session = await stripe.checkout.sessions.create({
       customer_email: user?.email,
@@ -36,6 +30,7 @@ export async function POST(request) {
             unit_amount: Number(price) * 100,
             product_data: {
               name: title,
+              images: imageUrl ? [imageUrl] : [],
             }
           },
           quantity: 1,
@@ -46,7 +41,8 @@ export async function POST(request) {
         userId: user.id,
         userEmail: user.email,
         title,
-        artworkId
+        artworkId,
+        imageUrl,
       },
       mode: 'payment',
       success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
