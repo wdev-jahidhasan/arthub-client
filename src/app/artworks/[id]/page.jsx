@@ -1,6 +1,8 @@
+import { subscriptionConfig } from '@/app/config/subscriptionConfig';
 import PurchaseButton from '@/components/dashboardComp/PurchaseButton';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import React from 'react';
 
 async function getSingleArtwork(id) {
@@ -19,18 +21,40 @@ async function getSingleArtwork(id) {
   }
 }
 
+async function getBoughtArtworksCount() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) return 0;
+    const data = await res.json();
+    return data.data ? data.data.length : 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
 const ArtworkDetailsPage = async ({ params }) => {
   const { id } = await params;
 
-  const [artwork, session] = await Promise.all([
+  const [artwork, session, totalBought] = await Promise.all([
     getSingleArtwork(id),
     auth.api.getSession({
       headers: await headers()
-    })
+    }),
+    getBoughtArtworksCount()
   ]);
 
   const userRole = session?.user?.role; 
   const isArtist = userRole === 'artist';
+
+  const userPlan = session?.user?.plan || 'Free';
+  const currentSub = subscriptionConfig.find(
+    (sub) => sub.tier.toLowerCase() === userPlan.toLowerCase()
+  );
+  const maxPurchases = currentSub ? currentSub.maxPurchases : 3;
+
+  const isLimitExceeded = maxPurchases !== 'Unlimited' && totalBought >= maxPurchases;
 
   if (!artwork) {
     return (
@@ -98,19 +122,35 @@ const ArtworkDetailsPage = async ({ params }) => {
                 </p>
               </div>
 
-              {/* Purchase Button with Artist Check */}
+              {/* Purchase Button with Artist & Plan Limit Check */}
               <div className="w-full sm:w-auto flex flex-col items-end gap-2">
                 <PurchaseButton
                   price={artwork.price}
                   title={artwork.title}
                   artworkId={artwork._id}
                   imageUrl={artwork.imageUrl || artwork.image}
-                  disabled={isArtist}
+                  disabled={isArtist || isLimitExceeded}
                 />
+
+                {/* Messages & Upgrade Link */}
                 {isArtist && (
                   <span className="text-xs text-amber-400 tracking-wide font-medium">
                     Artists cannot purchase artworks.
                   </span>
+                )}
+
+                {!isArtist && isLimitExceeded && (
+                  <div className="text-right">
+                    <p className="text-xs text-red-400 font-medium">
+                      You have reached your plan limit ({totalBought}/{maxPurchases}).
+                    </p>
+                    <Link 
+                      href="/dashboard/user/subscription"
+                      className="text-xs text-pink-400 underline font-semibold hover:text-pink-300 transition-colors mt-0.5 inline-block"
+                    >
+                      Upgrade your plan to buy more &rarr;
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>

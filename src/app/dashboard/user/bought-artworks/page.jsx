@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
+import { subscriptionConfig, subscriptions } from '@/app/config/subscriptionConfig';
+
 
 async function getBoughtArtworks() {
   try {
@@ -30,10 +31,18 @@ export default async function UserBoughtArtworksPage() {
     })
   ]);
 
-  const userPlan = session?.user?.plan || 'Standard';
-  const purchaseLimit = session?.user?.purchaseLimit || 10;
+  const userPlan = session?.user?.plan || 'Free';
   const totalBought = purchases.length;
-  const remainingLimit = Math.max(0, purchaseLimit - totalBought);
+
+  const currentSub = subscriptionConfig.find(
+    (sub) => sub.tier.toLowerCase() === userPlan.toLowerCase()
+  );
+  const maxPurchases = currentSub ? currentSub.maxPurchases : 3;
+
+  const isUnlimited = maxPurchases === 'Unlimited';
+  const remainingLimit = isUnlimited 
+    ? 'Unlimited' 
+    : Math.max(0, maxPurchases - totalBought);
 
   return (
     <div className="min-h-screen bg-[#0b0b0f] text-white p-3 sm:p-6 lg:p-8 selection:bg-pink-500 selection:text-white">
@@ -59,7 +68,7 @@ export default async function UserBoughtArtworksPage() {
             <div className="h-8 w-[1px] bg-gray-800"></div>
             <div>
               <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Total Bought</p>
-              <p className="text-xs sm:text-sm font-bold text-white mt-0.5">{totalBought}</p>
+              <p className="text-xs sm:text-sm font-bold text-white mt-0.5">{totalBought} / {maxPurchases}</p>
             </div>
             <div className="h-8 w-[1px] bg-gray-800"></div>
             <div>

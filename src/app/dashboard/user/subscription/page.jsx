@@ -1,32 +1,6 @@
 "use client"
+import { subscriptionConfig } from '@/app/config/subscriptionConfig';
 import React, { useState } from 'react';
-
-const subscriptions = [
-  {
-    tier: 'Free',
-    maxPurchases: '3 paintings',
-    price: '$0',
-    description: 'Best for exploring the platform and starting your journey.',
-    features: ['Up to 3 painting purchases', 'Basic customer support', 'Standard resolution access'],
-  },
-  {
-    tier: 'Pro',
-    maxPurchases: '9 paintings',
-    price: '$9.99',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
-    description: 'Perfect for passionate art collectors and enthusiasts.',
-    features: ['Up to 9 painting purchases', 'Priority customer support', 'Early access to new art pieces'],
-    popular: true,
-  },
-  {
-    tier: 'Premium',
-    maxPurchases: 'Unlimited',
-    price: '$19.99',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID,
-    description: 'Designed for zero limitations.',
-    features: ['Unlimited painting purchases', 'Dedicated VIP support', 'Exclusive premium gallery access'],
-  },
-];
 
 const UserSubscriptionPage = () => {
   const [loadingTier, setLoadingTier] = useState(null);
@@ -74,7 +48,7 @@ const UserSubscriptionPage = () => {
 
       {/* Responsive Grid */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-        {subscriptions.map((sub, index) => {
+        {subscriptionConfig.map((sub, index) => {
           const isLoading = loadingTier === sub.tier;
 
           return (
