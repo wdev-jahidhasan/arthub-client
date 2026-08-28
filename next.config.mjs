@@ -3,7 +3,7 @@ const nextConfig = {
   /* config options here */
   reactCompiler: true,
   images: {
-    
+    unoptimized: true,
     remotePatterns: [
       // all sites
 

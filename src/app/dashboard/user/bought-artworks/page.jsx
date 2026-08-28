@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+
 async function getBoughtArtworks() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases`, {
@@ -20,20 +23,50 @@ async function getBoughtArtworks() {
 }
 
 export default async function UserBoughtArtworksPage() {
-  const purchases = await getBoughtArtworks();
+  const [purchases, session] = await Promise.all([
+    getBoughtArtworks(),
+    auth.api.getSession({
+      headers: await headers()
+    })
+  ]);
+
+  const userPlan = session?.user?.plan || 'Standard';
+  const purchaseLimit = session?.user?.purchaseLimit || 10;
+  const totalBought = purchases.length;
+  const remainingLimit = Math.max(0, purchaseLimit - totalBought);
 
   return (
     <div className="min-h-screen bg-[#0b0b0f] text-white p-3 sm:p-6 lg:p-8 selection:bg-pink-500 selection:text-white">
       <div className="max-w-7xl mx-auto">
         
-        {/* Page Header */}
-        <div className="mb-6 border-b border-gray-800/80 pb-4">
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mb-1">
-            Bought Artworks
-          </h1>
-          <p className="text-gray-400 text-xs">
-            Here is the collection of all the artworks you have successfully purchased.
-          </p>
+        {/* Page Header & Plan Summary Widget */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-6">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mb-1">
+              Bought Artworks
+            </h1>
+            <p className="text-gray-400 text-xs">
+              Here is the collection of all the artworks you have successfully purchased.
+            </p>
+          </div>
+
+          {/* Plan & Usage Summary Card */}
+          <div className="bg-[#121217] border border-gray-800 p-3.5 rounded-2xl flex items-center gap-6 shadow-md">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Current Plan</p>
+              <p className="text-xs sm:text-sm font-bold text-pink-400 mt-0.5">{userPlan}</p>
+            </div>
+            <div className="h-8 w-[1px] bg-gray-800"></div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Total Bought</p>
+              <p className="text-xs sm:text-sm font-bold text-white mt-0.5">{totalBought}</p>
+            </div>
+            <div className="h-8 w-[1px] bg-gray-800"></div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Remaining Limit</p>
+              <p className="text-xs sm:text-sm font-bold text-emerald-400 mt-0.5">{remainingLimit}</p>
+            </div>
+          </div>
         </div>
 
         {/* Empty State */}
