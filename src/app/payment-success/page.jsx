@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { stripe } from '../../lib/stripe';
-import CommentModal from '../../components/dashboardComp/CommentModal';
+import ReviewModal from '@/components/dashboardComp/ReviewModal';
+
 
 export default async function Success({ searchParams }) {
   const { session_id } = await searchParams;
@@ -45,7 +46,7 @@ export default async function Success({ searchParams }) {
     const userEmail = metadata?.userEmail || customerEmail;
 
     return (
-      <CommentModal 
+      <ReviewModal 
         artworkId={artworkId} 
         userId={userId}
         userEmail={userEmail} 

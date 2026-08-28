@@ -76,10 +76,10 @@ export default async function Success({ searchParams }) {
 
           {/* Action Button */}
           <Link
-            href="/dashboard/user/subscription"
+            href="/artworks"
             className="block w-full py-3 px-4 rounded-xl font-semibold text-xs sm:text-sm bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white transition-all shadow-lg shadow-pink-600/25 active:scale-[0.98]"
           >
-            Go to Dashboard
+            Purchase More
           </Link>
         </div>
       </div>

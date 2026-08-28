@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export default function CommentModal({ artworkId, userId, userEmail, customerEmail, status }) {
+export default function ReviewModal({ artworkId, userId, userEmail, customerEmail, status }) {
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
