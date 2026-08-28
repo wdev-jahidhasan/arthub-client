@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function PurchaseButton({ price, title, artworkId }) {
+export default function PurchaseButton({ price, title, artworkId, disabled }) {
   const [loading, setLoading] = useState(false);
 
   const handlePurchase = async () => {
@@ -34,10 +34,14 @@ export default function PurchaseButton({ price, title, artworkId }) {
   return (
     <button
       onClick={handlePurchase}
-      disabled={loading}
-      className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-bold tracking-wide shadow-lg shadow-purple-600/30 transition-all duration-300 hover:shadow-pink-500/50 active:scale-95 disabled:opacity-50"
+      disabled={loading || disabled} 
+      className={`px-8 py-4 rounded-2xl font-bold tracking-wide shadow-lg transition-all duration-300 ${
+        disabled
+          ? 'bg-slate-800 text-slate-500 cursor-not-allowed shadow-none opacity-50 pointer-events-none'
+          : 'bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white shadow-purple-600/30 hover:shadow-pink-500/50 active:scale-95 disabled:opacity-50'
+      }`}
     >
-      {loading ? 'Processing...' : 'Purchase Now'}
+      {disabled ? 'Restricted for Artists' : loading ? 'Processing...' : 'Purchase Now'}
     </button>
   );
 }

@@ -1,4 +1,6 @@
 import PurchaseButton from '@/components/dashboardComp/PurchaseButton';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import React from 'react';
 
 async function getSingleArtwork(id) {
@@ -19,11 +21,20 @@ async function getSingleArtwork(id) {
 
 const ArtworkDetailsPage = async ({ params }) => {
   const { id } = await params;
-  const artwork = await getSingleArtwork(id);
+
+  const [artwork, session] = await Promise.all([
+    getSingleArtwork(id),
+    auth.api.getSession({
+      headers: await headers()
+    })
+  ]);
+
+  const userRole = session?.user?.role; 
+  const isArtist = userRole === 'artist';
 
   if (!artwork) {
     return (
-      <div className="bg-slate-950 text-white flex items-center justify-center">
+      <div className="bg-slate-950 text-white flex items-center justify-center min-h-[50vh]">
         <h2 className="text-xl font-bold tracking-wide">Artwork Not Found!</h2>
       </div>
     );
@@ -33,8 +44,7 @@ const ArtworkDetailsPage = async ({ params }) => {
 
   return (
     <div className="bg-slate-950 text-slate-100 py-16 px-4 flex items-center justify-center relative overflow-hidden">
-
-      {/* Background Ambient Glows (Purple/Magenta Theme) */}
+      {/* Background Ambient Glows */}
       <div className="absolute top-1/4 left-1/6 w-[30rem] h-[30rem] bg-purple-600/15 rounded-full blur-[128px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/6 w-[30rem] h-[30rem] bg-pink-600/15 rounded-full blur-[128px] pointer-events-none" />
 
@@ -80,7 +90,7 @@ const ArtworkDetailsPage = async ({ params }) => {
             </div>
 
             {/* Price & Purchase Action */}
-            <div className="flex items-center justify-between gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
               <div>
                 <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold">Current Price</p>
                 <p className="text-3xl sm:text-4xl font-black text-white mt-1">
@@ -88,22 +98,20 @@ const ArtworkDetailsPage = async ({ params }) => {
                 </p>
               </div>
 
-              {/* 🎨 Purple to Pink Signature Gradient Button */}
-              {/* <form action={'/api/payment'} method="POST">
-                <input type = "hidden" name="price" value={artwork.price}></input>
-                <input type = "hidden" name="title" value={artwork.title}></input>
-                <input type = "hidden" name="artworkId" value={artwork._id}></input>
-
-                <button type='submit' className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-bold tracking-wide shadow-lg shadow-purple-600/30 transition-all duration-300 hover:shadow-pink-500/50 active:scale-95">
-                  Purchase Now
-                </button>
-              </form> */}
-
-              <PurchaseButton
-                price={artwork.price}
-                title={artwork.title}
-                artworkId={artwork._id}
-              />
+              {/* Purchase Button with Artist Check */}
+              <div className="w-full sm:w-auto flex flex-col items-end gap-2">
+                <PurchaseButton
+                  price={artwork.price}
+                  title={artwork.title}
+                  artworkId={artwork._id}
+                  disabled={isArtist}
+                />
+                {isArtist && (
+                  <span className="text-xs text-amber-400 tracking-wide font-medium">
+                    Artists cannot purchase artworks.
+                  </span>
+                )}
+              </div>
             </div>
 
           </div>
