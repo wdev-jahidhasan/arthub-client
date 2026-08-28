@@ -65,13 +65,15 @@ export default async function UserBoughtArtworksPage() {
                   className="bg-[#121217] border border-gray-800/80 rounded-2xl overflow-hidden shadow-lg hover:border-pink-500/40 transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Artwork Image */}
+                    {/* Artwork Image with Next.js Image Component */}
                     <div className="relative w-full h-32 sm:h-40 bg-[#181822] overflow-hidden">
                       {artworkImg ? (
-                        <img 
+                        <Image 
                           src={artworkImg} 
                           alt={item.metadata?.title || 'Artwork'} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-600 text-[10px] sm:text-xs text-center p-1">
