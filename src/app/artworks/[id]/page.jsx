@@ -21,9 +21,10 @@ async function getSingleArtwork(id) {
   }
 }
 
-async function getBoughtArtworksCount() {
+async function getBoughtArtworksCount(userId) {
+  if (!userId) return 0;
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/purchases?userId=${userId}`, {
       cache: 'no-store',
     });
     if (!res.ok) return 0;
@@ -37,12 +38,15 @@ async function getBoughtArtworksCount() {
 const ArtworkDetailsPage = async ({ params }) => {
   const { id } = await params;
 
-  const [artwork, session, totalBought] = await Promise.all([
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  const userId = session?.user?.id;
+
+  const [artwork, totalBought] = await Promise.all([
     getSingleArtwork(id),
-    auth.api.getSession({
-      headers: await headers()
-    }),
-    getBoughtArtworksCount()
+    getBoughtArtworksCount(userId)
   ]);
 
   const userRole = session?.user?.role; 
