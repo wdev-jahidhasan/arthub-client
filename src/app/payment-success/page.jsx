@@ -9,9 +9,14 @@ export default async function Success({ searchParams }) {
     throw new Error('Please provide a valid session_id (`cs_test_...`)');
   }
 
-  const session = await stripe.checkout.sessions.retrieve(session_id, {
-    expand: ['line_items', 'payment_intent']
-  });
+  let session;
+  try {
+    session = await stripe.checkout.sessions.retrieve(session_id, {
+      expand: ['line_items', 'payment_intent']
+    });
+  } catch (error) {
+    return redirect('/');
+  }
 
   const { status, metadata, customer_details, payment_intent } = session;
   const customerEmail = customer_details?.email || 'valued customer';
@@ -36,10 +41,14 @@ export default async function Success({ searchParams }) {
     });
 
     const artworkId = metadata?.artworkId || '';
+    const userId = metadata?.userId || '';
+    const userEmail = metadata?.userEmail || customerEmail;
 
     return (
       <CommentModal 
         artworkId={artworkId} 
+        userId={userId}
+        userEmail={userEmail} 
         customerEmail={customerEmail} 
         status={status} 
       />
