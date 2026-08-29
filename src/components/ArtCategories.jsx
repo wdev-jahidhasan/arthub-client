@@ -1,5 +1,6 @@
 import React from "react";
 import { Palette, Monitor, Component, Pencil } from "lucide-react";
+import Link from "next/link";
 
 const categories = [
   {
@@ -43,9 +44,9 @@ const ArtCategories = () => {
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (
-              <a
+              <Link
                 key={cat.filter}
-                href={`/browse?category=${cat.filter}`}
+                href={`/artworks?category=${cat.filter}`}
                 className="group relative p-7 rounded-3xl bg-gradient-to-b from-[#0e1322] to-[#070b14] border border-slate-800/80 hover:border-purple-500/60 transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-purple-950/30 hover:-translate-y-2 flex flex-col items-center text-center overflow-hidden"
               >
                 {/* Background Ambient Glow */}
@@ -65,7 +66,7 @@ const ArtCategories = () => {
                 <p className="text-xs text-slate-400 leading-relaxed">
                   {cat.description}
                 </p>
-              </a>
+              </Link>
             );
           })}
         </div>

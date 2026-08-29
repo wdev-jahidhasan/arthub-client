@@ -1,19 +1,28 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search, Loader2 } from 'lucide-react';
 
-const ArtWorksPage = () => {
+const ArtWorksContent = () => {
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter & Search States
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('All');
+  const [category, setCategory] = useState(categoryFromUrl || 'All');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sort, setSort] = useState('newest');
+
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
 
   // Fetch Artworks based on filters
   useEffect(() => {
@@ -174,6 +183,14 @@ const ArtWorksPage = () => {
         </div>
       )}
     </div>
+  );
+};
+
+const ArtWorksPage = () => {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0b0f19] flex items-center justify-center text-slate-400">Loading gallery...</div>}>
+      <ArtWorksContent />
+    </Suspense>
   );
 };
 
