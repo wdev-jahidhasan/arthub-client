@@ -99,7 +99,7 @@ export default function DashboardHome() {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6 font-sans">
       {/* 1. Dashboard Greeting Header */}
-      <div className="w-full bg-[#0b0f17] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+      <div className="w-full bg-[#0b0f17] border border-zinc-800/80 rounded-2xl p-6 shadow-xl mt-10">
         <div className="space-y-2">
           <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
             Hello, <span className="text-pink-500">{userName}</span> 👋
