@@ -233,7 +233,7 @@ export default function DashboardHome() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleFileCardChange = handleFileChange}
+                      onChange={handleFileChange}
                       className="hidden"
                     />
                   </label>
