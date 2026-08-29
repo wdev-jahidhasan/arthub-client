@@ -26,7 +26,7 @@ const DashboardNavbar = () => {
   }
 
   return (
-    <header className="w-full bg-black border-b border-white/10 p-3 sm:px-6 flex items-center justify-between gap-3">
+    <header className="sticky top-0 z-50 w-full bg-black border-b border-white/10 p-3 sm:px-6 flex items-center justify-between gap-3">
       <div className="flex items-center gap-3 min-w-0">
         {/* Hamburger Menu Trigger */}
         <div className="md:hidden shrink-0">
