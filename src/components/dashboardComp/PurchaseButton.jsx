@@ -1,10 +1,17 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function PurchaseButton({ price, title, artworkId, imageUrl, disabled }) {
+export default function PurchaseButton({ price, title, artworkId, imageUrl, disabled, isLoggedIn }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handlePurchase = async () => {
+    if (!isLoggedIn) {
+      router.push('/login');
+      return;
+    }
+
     setLoading(true);
     try {
       const formData = new FormData();

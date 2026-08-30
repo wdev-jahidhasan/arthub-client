@@ -43,16 +43,17 @@ const ArtworkDetailsPage = async ({ params }) => {
   });
 
   const userId = session?.user?.id;
+  const user = session?.user || null;
 
   const [artwork, totalBought] = await Promise.all([
     getSingleArtwork(id),
     getBoughtArtworksCount(userId)
   ]);
 
-  const userRole = session?.user?.role; 
+  const userRole = user?.role;
   const isArtist = userRole === 'artist';
 
-  const userPlan = session?.user?.plan || 'Free';
+  const userPlan = user?.plan || 'Free';
   const currentSub = subscriptionConfig.find(
     (sub) => sub.tier.toLowerCase() === userPlan.toLowerCase()
   );
@@ -134,6 +135,7 @@ const ArtworkDetailsPage = async ({ params }) => {
                   artworkId={artwork._id}
                   imageUrl={artwork.imageUrl || artwork.image}
                   disabled={isArtist || isLimitExceeded}
+                  isLoggedIn={!!user}
                 />
 
                 {/* Messages & Upgrade Link */}
@@ -148,7 +150,7 @@ const ArtworkDetailsPage = async ({ params }) => {
                     <p className="text-xs text-red-400 font-medium">
                       You have reached your plan limit ({totalBought}/{maxPurchases}).
                     </p>
-                    <Link 
+                    <Link
                       href="/dashboard/user/subscription"
                       className="text-xs text-pink-400 underline font-semibold hover:text-pink-300 transition-colors mt-0.5 inline-block"
                     >
