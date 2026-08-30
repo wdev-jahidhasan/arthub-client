@@ -1,5 +1,6 @@
 import { subscriptionConfig } from '@/app/config/subscriptionConfig';
 import PurchaseButton from '@/components/dashboardComp/PurchaseButton';
+import ArtworkReviewsModal from '@/components/ArtworkReviewsModal';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -151,30 +152,37 @@ export default async function ArtworkDetailsPage({ params }) {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
               {isOwnerArtist ? (
-                <div className="flex items-center gap-6 w-full pt-2">
-                  <Link
-                    href="/dashboard/artist/artworks"
-                    className="text-pink-400 font-semibold hover:underline text-sm sm:text-base inline-flex items-center gap-1"
-                  >
-                    Edit Artwork &rarr;
-                  </Link>
-                  <Link
-                    href="/dashboard/artist/artworks"
-                    className="text-red-400 font-semibold hover:underline text-sm sm:text-base inline-flex items-center gap-1"
-                  >
-                    Delete Artwork &rarr;
-                  </Link>
+                <div className="flex flex-wrap items-center justify-between w-full pt-2 gap-4">
+                  <div className="flex items-center gap-6">
+                    <Link
+                      href="/dashboard/artist/artworks"
+                      className="text-pink-400 font-semibold hover:underline text-sm sm:text-base inline-flex items-center gap-1"
+                    >
+                      Edit Artwork &rarr;
+                    </Link>
+                    <Link
+                      href="/dashboard/artist/artworks"
+                      className="text-red-400 font-semibold hover:underline text-sm sm:text-base inline-flex items-center gap-1"
+                    >
+                      Delete Artwork &rarr;
+                    </Link>
+                  </div>
+                  <ArtworkReviewsModal artworkId={artwork._id} artworkTitle={artwork.title} />
                 </div>
               ) : (
-                <div className="w-full sm:w-auto flex flex-col items-end gap-2">
-                  <PurchaseButton
-                    price={artwork.price}
-                    title={artwork.title}
-                    artworkId={artwork._id}
-                    imageUrl={imageUrl}
-                    disabled={isArtist || isLimitExceeded}
-                    isLoggedIn={!!user}
-                  />
+                <div className="w-full flex flex-col gap-2">
+                  <div className="w-full flex items-center justify-between">
+                    <PurchaseButton
+                      price={artwork.price}
+                      title={artwork.title}
+                      artworkId={artwork._id}
+                      imageUrl={imageUrl}
+                      disabled={isArtist || isLimitExceeded}
+                      isLoggedIn={!!user}
+                    />
+
+                    <ArtworkReviewsModal artworkId={artwork._id} artworkTitle={artwork.title} />
+                  </div>
 
                   {isArtist && (
                     <span className="text-xs text-amber-400 tracking-wide font-medium">
