@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ArtWorksContent = () => {
   const searchParams = useSearchParams();
@@ -12,11 +12,17 @@ const ArtWorksContent = () => {
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Filter & Search States
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState(categoryFromUrl || 'All');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sort, setSort] = useState('newest');
+
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 9;
 
   useEffect(() => {
     if (categoryFromUrl) {
@@ -24,7 +30,12 @@ const ArtWorksContent = () => {
     }
   }, [categoryFromUrl]);
 
-  // Fetch Artworks based on filters
+  // Reset page to 1 whenever filters or search query change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, category, minPrice, maxPrice, sort]);
+
+  // Fetch Artworks based on filters, sorting, and pagination
   useEffect(() => {
     const fetchArtworks = async () => {
       setLoading(true);
@@ -36,10 +47,16 @@ const ArtWorksContent = () => {
         if (maxPrice) queryParams.append('maxPrice', maxPrice);
         if (sort) queryParams.append('sort', sort);
 
+        // Append pagination parameters
+        queryParams.append('page', currentPage.toString());
+        queryParams.append('limit', limit.toString());
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/artworks/search-filter-sort?${queryParams.toString()}`);
         const data = await res.json();
+
         if (data.success) {
           setArtworks(data.data);
+          setTotalPages(data.totalPages || data.pagination?.totalPages || 1);
         }
       } catch (error) {
         console.error('Failed to fetch artworks:', error);
@@ -53,7 +70,7 @@ const ArtWorksContent = () => {
     }, 400);
 
     return () => clearTimeout(delayDebounce);
-  }, [search, category, minPrice, maxPrice, sort]);
+  }, [search, category, minPrice, maxPrice, sort, currentPage]);
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 p-6 md:p-12">
@@ -80,7 +97,7 @@ const ArtWorksContent = () => {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          {/* Category Filter (Updated with 'sketch' instead of 'photography') */}
+          {/* Category Filter */}
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -131,52 +148,95 @@ const ArtWorksContent = () => {
           <p className="text-slate-400 text-sm animate-pulse">Loading artworks...</p>
         </div>
       ) : artworks.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {artworks.map((art) => (
-            <div
-              key={art._id}
-              className="group relative bg-[#111726]/85 backdrop-blur-md border border-slate-800/80 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-[#831867]/20 hover:border-[#831867]/40 transition-all duration-300 ease-out hover:-translate-y-1.5 flex flex-col justify-between p-5"
-            >
-              <div>
-                <div className="relative w-full h-64 overflow-hidden rounded-xl bg-slate-950">
-                  <Image
-                    src={art.imageUrl}
-                    alt={art.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
-                  <span className="absolute top-3 left-3 bg-slate-950/70 backdrop-blur-md text-slate-300 text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-700/50">
-                    {art.category}
-                  </span>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {artworks.map((art) => (
+              <div
+                key={art._id}
+                className="group relative bg-[#111726]/85 backdrop-blur-md border border-slate-800/80 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-[#831867]/20 hover:border-[#831867]/40 transition-all duration-300 ease-out hover:-translate-y-1.5 flex flex-col justify-between p-5"
+              >
+                <div>
+                  <div className="relative w-full h-64 overflow-hidden rounded-xl bg-slate-950">
+                    <Image
+                      src={art.imageUrl}
+                      alt={art.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    <span className="absolute top-3 left-3 bg-slate-950/70 backdrop-blur-md text-slate-300 text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-700/50">
+                      {art.category}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 mb-2 flex justify-between items-baseline gap-2">
+                    <h2 className="text-xl font-bold text-slate-100 group-hover:text-[#cf38a4] transition-colors duration-300 line-clamp-1">
+                      {art.title}
+                    </h2>
+                    <span className="text-xl font-extrabold text-[#cf38a4] tracking-tight shrink-0">
+                      ${art.price}
+                    </span>
+                  </div>
+
+                  <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
+                    {art.description}
+                  </p>
                 </div>
 
-                <div className="mt-4 mb-2 flex justify-between items-baseline gap-2">
-                  <h2 className="text-xl font-bold text-slate-100 group-hover:text-[#cf38a4] transition-colors duration-300 line-clamp-1">
-                    {art.title}
-                  </h2>
-                  <span className="text-xl font-extrabold text-[#cf38a4] tracking-tight shrink-0">
-                    ${art.price}
-                  </span>
+                <div className="mt-3 pt-2 border-t border-slate-800/60 flex justify-end">
+                  <Link
+                    href={`/artworks/${art._id}`}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#cf38a4] hover:text-[#e255bc] transition-colors duration-200 group/link"
+                  >
+                    <span>View Details</span>
+                    <span className="transition-transform duration-200 group-hover/link:translate-x-1">→</span>
+                  </Link>
                 </div>
+              </div>
+            ))}
+          </div>
 
-                <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
-                  {art.description}
-                </p>
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="max-w-7xl mx-auto mt-12 flex items-center justify-center gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-4 py-2 rounded-xl bg-[#111726]/80 border border-slate-800 text-sm text-slate-200 hover:border-[#cf38a4] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Prev</span>
+              </button>
+
+              <div className="flex items-center gap-1 px-2">
+                {Array.from({ length: totalPages }, (_, index) => {
+                  const pageNumber = index + 1;
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => setCurrentPage(pageNumber)}
+                      className={`w-9 h-9 rounded-xl text-sm font-semibold transition-all ${currentPage === pageNumber
+                          ? 'bg-[#cf38a4] text-white shadow-lg shadow-[#cf38a4]/20'
+                          : 'bg-[#111726]/80 border border-slate-800 text-slate-300 hover:border-slate-700'
+                        }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
               </div>
 
-              <div className="mt-3 pt-2 border-t border-slate-800/60 flex justify-end">
-                <Link
-                  href={`/artworks/${art._id}`}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#cf38a4] hover:text-[#e255bc] transition-colors duration-200 group/link"
-                >
-                  <span>View Details</span>
-                  <span className="transition-transform duration-200 group-hover/link:translate-x-1">→</span>
-                </Link>
-              </div>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 px-4 py-2 rounded-xl bg-[#111726]/80 border border-slate-800 text-sm text-slate-200 hover:border-[#cf38a4] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-32 text-slate-500 text-sm">
           No artworks found matching your criteria.
