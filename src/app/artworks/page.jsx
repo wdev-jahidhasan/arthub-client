@@ -8,6 +8,7 @@ import { Search, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 const ArtWorksContent = () => {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
+  const artistIdFromUrl = searchParams.get('artistId');
 
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,7 @@ const ArtWorksContent = () => {
   // Filter & Search States
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState(categoryFromUrl || 'All');
+  const [artistId, setArtistId] = useState(artistIdFromUrl || '');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sort, setSort] = useState('newest');
@@ -24,16 +26,25 @@ const ArtWorksContent = () => {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 9;
 
+  // Sync category and artistId from URL changes
   useEffect(() => {
     if (categoryFromUrl) {
       setCategory(categoryFromUrl);
+    } else {
+      setCategory('All');
     }
-  }, [categoryFromUrl]);
 
-  // Reset page to 1 whenever filters or search query change
+    if (artistIdFromUrl) {
+      setArtistId(artistIdFromUrl);
+    } else {
+      setArtistId('');
+    }
+  }, [categoryFromUrl, artistIdFromUrl]);
+
+  // Reset page to 1 whenever filters, artistId, or search query change
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, category, minPrice, maxPrice, sort]);
+  }, [search, category, artistId, minPrice, maxPrice, sort]);
 
   // Fetch Artworks based on filters, sorting, and pagination
   useEffect(() => {
@@ -43,6 +54,7 @@ const ArtWorksContent = () => {
         const queryParams = new URLSearchParams();
         if (search) queryParams.append('search', search);
         if (category && category !== 'All') queryParams.append('category', category);
+        if (artistId) queryParams.append('artistId', artistId);
         if (minPrice) queryParams.append('minPrice', minPrice);
         if (maxPrice) queryParams.append('maxPrice', maxPrice);
         if (sort) queryParams.append('sort', sort);
@@ -70,12 +82,12 @@ const ArtWorksContent = () => {
     }, 400);
 
     return () => clearTimeout(delayDebounce);
-  }, [search, category, minPrice, maxPrice, sort, currentPage]);
+  }, [search, category, artistId, minPrice, maxPrice, sort, currentPage]);
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 p-6 md:p-12">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-8 text-center text-slate-100 tracking-tight">
-        Art Gallery
+        {artistId ? "Artist's Art Gallery" : "Art Gallery"}
       </h1>
 
       {/* Search, Filter & Sort Controls Section */}
@@ -215,10 +227,11 @@ const ArtWorksContent = () => {
                     <button
                       key={pageNumber}
                       onClick={() => setCurrentPage(pageNumber)}
-                      className={`w-9 h-9 rounded-xl text-sm font-semibold transition-all ${currentPage === pageNumber
+                      className={`w-9 h-9 rounded-xl text-sm font-semibold transition-all ${
+                        currentPage === pageNumber
                           ? 'bg-[#cf38a4] text-white shadow-lg shadow-[#cf38a4]/20'
                           : 'bg-[#111726]/80 border border-slate-800 text-slate-300 hover:border-slate-700'
-                        }`}
+                      }`}
                     >
                       {pageNumber}
                     </button>
