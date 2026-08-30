@@ -143,8 +143,8 @@ export default function Navbar() {
                     href="/"
                     onClick={() => setIsNavOpen(false)}
                     className={`px-3 py-2 rounded-xl text-sm font-medium transition ${isActive("/") && pathname === "/"
-                        ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-semibold"
-                        : "text-slate-300 hover:text-pink-400 hover:bg-slate-800/50"
+                      ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-semibold"
+                      : "text-slate-300 hover:text-pink-400 hover:bg-slate-800/50"
                       }`}
                   >
                     Home
@@ -153,8 +153,8 @@ export default function Navbar() {
                     href="/artworks"
                     onClick={() => setIsNavOpen(false)}
                     className={`px-3 py-2 rounded-xl text-sm font-medium transition ${isActive("/artworks")
-                        ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-semibold"
-                        : "text-slate-300 hover:text-pink-400 hover:bg-slate-800/50"
+                      ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-semibold"
+                      : "text-slate-300 hover:text-pink-400 hover:bg-slate-800/50"
                       }`}
                   >
                     Browse Artworks
@@ -211,8 +211,8 @@ export default function Navbar() {
             <Link
               href="/"
               className={`px-4 py-2 rounded-xl transition-all duration-200 ${isActive("/") && pathname === "/"
-                  ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
-                  : "hover:text-pink-400 hover:bg-slate-800/40"
+                ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
+                : "hover:text-pink-400 hover:bg-slate-800/40"
                 }`}
             >
               Home
@@ -220,8 +220,8 @@ export default function Navbar() {
             <Link
               href="/artworks"
               className={`px-4 py-2 rounded-xl transition-all duration-200 ${isActive("/artworks")
-                  ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
-                  : "hover:text-pink-400 hover:bg-slate-800/40"
+                ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
+                : "hover:text-pink-400 hover:bg-slate-800/40"
                 }`}
             >
               Browse Artworks
@@ -230,7 +230,14 @@ export default function Navbar() {
             {/* DASHBOARD DROPDOWN TRIGGER */}
             <div className="relative">
               <button
-                onClick={() => setIsDashboardOpen(!isDashboardOpen)}
+                onClick={() => {
+                  // যদি ইউজার লগইন করা না থাকে, তবে সরাসরি /login এ পাঠিয়ে দিন
+                  if (!session) {
+                    router.push("/login");
+                    return;
+                  }
+                  setIsDashboardOpen(!isDashboardOpen);
+                }}
                 className={`px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5 select-none outline-none ${isActive("/dashboard") || isDashboardOpen
                     ? "text-pink-400 bg-pink-500/10 border border-pink-500/20 font-bold shadow-sm"
                     : "hover:text-pink-400 hover:bg-slate-800/40 text-slate-300"
@@ -249,8 +256,7 @@ export default function Navbar() {
               </button>
 
               {/* FIXED RESPONSIVE DROPDOWN DRAWER */}
-              {/* Desktop/Tablet Dropdown */}
-              {isDashboardOpen && (
+              {isDashboardOpen && session && (
                 <>
                   <div className="fixed inset-0 z-40 bg-black/40" onClick={() => setIsDashboardOpen(false)} />
 
