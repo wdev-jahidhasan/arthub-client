@@ -176,14 +176,14 @@ export default function DashboardHome() {
               </div>
             )}
 
-            {isArtist && (
+            {/* {isArtist && (
               <div className="bg-[#121824] p-3 rounded-xl border border-zinc-800/80 col-span-2">
                 <span className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5">
                   Artworks
                 </span>
                 <span className="text-xs md:text-sm font-semibold text-zinc-200">{artworksCount} Items</span>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
