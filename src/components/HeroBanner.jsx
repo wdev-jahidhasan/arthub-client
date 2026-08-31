@@ -43,10 +43,10 @@ const HeroBanner = () => {
       ))}
 
       <div className="relative z-20 h-full max-w-4xl mx-auto px-6 flex flex-col justify-center items-center text-center">
-        {/* 60fps Ultra Smooth Clip-Path Typewriter Animation */}
-        <div className="relative overflow-hidden py-2">
+        {/* 60fps Ultra Smooth Clip-Path Typewriter Animation (Responsive font size added) */}
+        <div className="relative overflow-hidden py-2 w-full">
           <motion.h1
-            className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight whitespace-nowrap"
+            className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight flex flex-wrap justify-center items-center gap-x-2"
             initial={{ clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)" }}
             animate={{
               clipPath: [
@@ -63,14 +63,14 @@ const HeroBanner = () => {
               times: [0, 0.45, 0.75, 1],
             }}
           >
-            Discover & Buy{" "}
+            <span>Discover & Buy</span>{" "}
             <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-amber-400 bg-clip-text text-transparent">
               Original Art
             </span>
           </motion.h1>
         </div>
 
-        <p className="mt-4 text-slate-300 text-base md:text-xl max-w-2xl">
+        <p className="mt-4 text-slate-300 text-sm sm:text-base md:text-xl max-w-2xl">
           Explore unique masterworks created by independent artists worldwide.
         </p>
 
@@ -83,15 +83,16 @@ const HeroBanner = () => {
         </div>
       </div>
 
+      {/* Arrow positions adjusted for mobile (top-[62%] on mobile, top-1/2 on desktop) */}
       <button
         onClick={() => setCurrentIndex((prev) => (prev === 0 ? bannerImages.length - 1 : prev - 1))}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-slate-900/60 text-slate-300 hover:text-white hover:bg-purple-600/80 backdrop-blur-md border border-slate-700/50 transition duration-300"
+        className="absolute left-4 top-[62%] md:top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-slate-900/60 text-slate-300 hover:text-white hover:bg-purple-600/80 backdrop-blur-md border border-slate-700/50 transition duration-300"
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
       <button
         onClick={() => setCurrentIndex((prev) => (prev + 1) % bannerImages.length)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-slate-900/60 text-slate-300 hover:text-white hover:bg-purple-600/80 backdrop-blur-md border border-slate-700/50 transition duration-300"
+        className="absolute right-4 top-[62%] md:top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-slate-900/60 text-slate-300 hover:text-white hover:bg-purple-600/80 backdrop-blur-md border border-slate-700/50 transition duration-300"
       >
         <ChevronRight className="w-6 h-6" />
       </button>
